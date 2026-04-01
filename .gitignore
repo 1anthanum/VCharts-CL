@@ -13,7 +13,7 @@ build/
 # Data (large, not committed)
 # ──────────────────────────────────────────────
 UCRArchive_2018/
-data/
+/data/
 chart_images/
 chart_images_old/
 
