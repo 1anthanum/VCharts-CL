@@ -12,6 +12,13 @@
 #SBATCH --mail-type=BEGIN,END,FAIL,REQUEUE
 #SBATCH --mail-user=ellanthanum@gmail.com
 
+# ── CRITICAL: Set PATH early so rclone (in ~/bin) is available ──
+export PATH=$HOME/bin:$PATH
+
+# ── Activate environment ──
+source ~/miniconda3/etc/profile.d/conda.sh
+conda activate vtbench
+
 # ── Signal handler: upload partial results before Slurm kills us ──
 cleanup() {
     echo "[$(date)] Signal received — uploading partial results to R2..."
@@ -23,6 +30,13 @@ trap cleanup SIGTERM SIGINT USR1
 
 # ── Pull latest code (fail-safe) ──
 cd ~/myproject && git pull --ff-only || echo "WARN: git pull failed, using existing code"
+
+# ── Verify rclone is available ──
+if ! command -v rclone &>/dev/null; then
+    echo "FATAL: rclone not found in PATH=$PATH"
+    echo "Check that ~/bin/rclone exists and is executable"
+    exit 1
+fi
 
 # ── Download & extract UCR data (skip if already present) ──
 if [ ! -d /tmp/UCRArchive_2018 ]; then
@@ -44,11 +58,6 @@ if [ ! -d /tmp/chart_images ] || [ -z "$(ls -A /tmp/chart_images 2>/dev/null)" ]
 else
     echo "[$(date)] Chart images already in /tmp/, skipping download."
 fi
-
-# ── Activate environment ──
-source ~/miniconda3/etc/profile.d/conda.sh
-conda activate vtbench
-export PATH=$HOME/bin:$PATH
 
 # ── CRITICAL: Set image root to Linux path ──
 export CHART_IMAGE_ROOT=/tmp/chart_images
