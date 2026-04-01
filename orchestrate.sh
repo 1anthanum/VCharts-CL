@@ -9,6 +9,8 @@
 #SBATCH --output=/home/%u/logs/%j_out.txt
 #SBATCH --error=/home/%u/logs/%j_err.txt
 #SBATCH --signal=USR1@300
+#SBATCH --mail-type=BEGIN,END,FAIL,REQUEUE
+#SBATCH --mail-user=ellanthanum@gmail.com
 
 # ── Signal handler: upload partial results before Slurm kills us ──
 cleanup() {
