@@ -62,6 +62,10 @@ fi
 # ── CRITICAL: Set image root to Linux path ──
 export CHART_IMAGE_ROOT=/tmp/chart_images
 
+# ── Disable W&B (not authenticated on compute nodes) ──
+# Results are saved to CSV/JSON locally; W&B can be synced later if needed
+export WANDB_DISABLED=true
+
 # ── Print diagnostic info ──
 echo "[$(date)] Job $SLURM_JOB_ID started on $(hostname)"
 echo "CHART_IMAGE_ROOT=$CHART_IMAGE_ROOT"
