@@ -1,0 +1,52 @@
+# ============================================================
+# Experiment 7C - Chart Ablation + Extended Augmentation
+# ============================================================
+# Part 1: with_label vs without_label (do axes help or hurt?)
+# Part 2: Extended augmentation techniques (color jitter, cutmix,
+#          random erasing, trivial augment, etc.)
+# ============================================================
+
+experiment:
+  name: experiment_7c_chart_ablation
+  output_dir: results/experiment_7c_chart_ablation
+  image_size: 128
+  seeds: [42, 123, 7]
+  dataset_root: UCRArchive_2018
+  dataset_ext: tsv
+
+  datasets:
+    - SyntheticControl
+    - GunPoint
+    - CBF
+    - Trace
+    - ECG5000
+
+  chart_types:
+    - line
+    - area
+
+  label_modes:
+    - with_label
+    - without_label
+
+  augmentations:
+    - none
+    - color_jitter
+    - random_erasing
+    - rotation_5
+    - perspective
+    - trivial_augment
+    - combined_light
+    - combined_heavy
+
+  batch_augmentations:
+    -               # null = no batch aug
+    - mixup
+    - cutmix
+
+  models:
+    - { name: "resnet18_pt", chart_model: "resnet18", pretrained: true, lr: 0.0005 }
+
+training:
+  batch_size: 64
+  epochs: 100

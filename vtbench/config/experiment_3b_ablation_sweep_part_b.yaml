@@ -1,0 +1,60 @@
+experiment:
+  name: experiment_3b_sweep_part_b
+  output_dir: results/experiment_3b_sweep_part_b
+  dataset_root: UCRArchive_2018
+  dataset_ext: tsv
+  dataset_format: ucr
+  datasets:
+    - CricketX
+    - ECG5000
+    - Earthquakes
+    - ToeSegmentation1
+    - GunPoint
+  chart_types:
+    - line
+    - area
+    - bar
+    - scatter
+  runs: 10
+  seed: 42
+
+model:
+  type: single_modal_chart
+  chart_model: deepcnn
+  pretrained: false
+
+training:
+  batch_size: 32
+  epochs: 100
+  learning_rate: 0.0005
+  val_size: 0.2
+
+image_generation:
+  generate_images: true
+  overwrite_existing: false
+
+chart:
+  color_mode: color
+  label_mode: with_label
+  bar_mode: border
+  scatter_mode: plain
+
+ablations:
+  line_area:
+    blur_radius: 4
+    mask_threshold: 230
+    mask_expand: 3
+  bar:
+    merge_scale: 0.7
+    blur_radius: 0.0
+  scatter:
+    fade_alpha: 0.2
+    mask_threshold: 235
+
+sweeps:
+  line_area:
+    blur_radius: [0, 2, 4, 6]
+  bar:
+    merge_scale: [1.0, 0.85, 0.7, 0.55]
+  scatter:
+    fade_alpha: [1.0, 0.6, 0.4, 0.2, 0.1]

@@ -1,0 +1,66 @@
+# ============================================================
+# Experiment 5B — Multi-Chart Fusion (Full Run)
+# ============================================================
+# Tests whether fusing multiple chart encodings improves accuracy
+# Combos: single charts, 2-chart, 3-chart, 4-chart fusion
+# ============================================================
+
+experiment:
+  name: experiment_5b_full
+  output_dir: results/experiment_5b_full
+  dataset_root: UCRArchive_2018
+  dataset_ext: tsv
+  dataset_format: ucr
+  seeds: [42, 123, 7]
+
+  datasets:
+    - SyntheticControl
+    - GunPoint
+    - CBF
+    - Trace
+    - ECG5000
+
+  fusion_mode: concat
+
+  fusion_combos:
+    - { name: "line_only",      types: ["line"] }
+    - { name: "area_only",      types: ["area"] }
+    - { name: "line_area",      types: ["line", "area"] }
+    - { name: "line_bar",       types: ["line", "bar"] }
+    - { name: "line_area_bar",  types: ["line", "area", "bar"] }
+    - { name: "all_four",       types: ["line", "area", "bar", "scatter"] }
+
+augmentations:
+  - type: gaussian_blur
+    levels:
+      - { sigma: 1.0 }
+  - type: crop_horizontal
+    levels:
+      - { crop_fraction: 0.10 }
+  - type: gaussian_noise
+    levels:
+      - { sigma: 25, seed: 0 }
+  - type: jpeg_compress
+    levels:
+      - { quality: 20 }
+
+model:
+  type: single_modal_chart
+  chart_model: deepcnn
+  pretrained: false
+
+training:
+  batch_size: 64
+  epochs: 100
+  learning_rate: 0.001
+  val_size: 0.2
+
+image_generation:
+  generate_images: true
+  overwrite_existing: false
+
+chart:
+  color_mode: color
+  label_mode: with_label
+  bar_mode: border
+  scatter_mode: plain

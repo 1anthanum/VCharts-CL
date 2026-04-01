@@ -1,0 +1,47 @@
+# ============================================================
+# Experiment 8A — CLOUD ONLY (Large Datasets)
+# ============================================================
+# Wafer, TwoPatterns, FordA runs that cause GPU OOM on RTX 5070 Ti 16GB.
+# Run on cloud server with ≥24GB VRAM.
+# ============================================================
+
+experiment:
+  output_dir: results/experiment_8a_broad_evaluation
+  seeds: [42, 123, 7, 2024, 99]
+  image_size: 128
+
+  datasets:
+    - Wafer             # 1000 train, 152 len, 2 classes
+    - TwoPatterns       # 1000 train, 128 len, 4 classes
+    - FordA             # 3601 train, 500 len, 2 classes
+
+  chart_encodings:
+    - line
+    - scatter
+
+  math_encodings:
+    - gasf
+    - rp_grayscale
+    - cwt
+
+  rgb_encodings:
+    - gasf_gadf_mtf
+    - rp_cwt_stft
+
+  extended_encodings:
+    - phase_trajectory
+    - phase_gasf_rp
+
+  models:
+    - name: deepcnn
+      chart_model: deepcnn
+      pretrained: false
+      lr: 0.001
+    - name: resnet18_pt
+      chart_model: resnet18
+      pretrained: true
+      lr: 0.0005
+
+training:
+  batch_size: 128
+  epochs: 100

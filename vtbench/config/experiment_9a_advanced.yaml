@@ -1,0 +1,68 @@
+# ============================================================
+# Experiment 9A — Advanced Methods for Accuracy Improvement
+# ============================================================
+# Tests ALL new accuracy improvement methods in isolation:
+#   A. New backbones: EfficientNet B0 (pt), ViT Tiny
+#   B. New encodings: Wavelet Scattering, Signature, Persistence
+#   C. Training augmentation: Mixup, CutMix
+#   D. Test-Time Augmentation (TTA, 5 and 7 views)
+#   E. Channel attention: SE-Net, CBAM
+#   F. Cross-encoding ensemble (voting top-3 diverse encodings)
+#
+# Strategy: use ONLY small datasets (train < 500) on local GPU.
+# FordA, Wafer, TwoPatterns → deferred to cloud server.
+# ============================================================
+
+experiment:
+  name: experiment_9a_advanced
+  output_dir: results/experiment_9a_advanced
+  image_size: 128
+  seeds: [42, 123, 7]
+
+  # ONLY small/medium datasets — safe for RTX 5070 Ti 16GB
+  datasets:
+    - SyntheticControl    # 300 train, 6 classes
+    - GunPoint            #  50 train, 2 classes
+    - CBF                 #  30 train, 3 classes
+    - Trace               # 100 train, 4 classes
+    - ECG5000             # 500 train, 5 classes
+
+  # Encodings to test methods on (proven top performers from 6A)
+  encodings:
+    - gadf          # Best overall in 6A
+    - cwt           # Best on frequency-domain datasets
+    - rp_grayscale  # Best on shape datasets
+
+  # New encoding methods to evaluate
+  new_encodings:
+    - wavelet_scattering
+    - signature
+    - persistence
+
+  # Methods to compare (each applied independently)
+  methods:
+    - baseline           # Standard training (control)
+    - mixup              # Mixup (alpha=0.2)
+    - cutmix             # CutMix (alpha=1.0)
+    - tta_5              # TTA with 5 augmented views
+    - tta_7              # TTA with 7 augmented views
+    - se_attention       # SE-Net on backbone
+    - cbam_attention     # CBAM on backbone
+
+  # Models
+  models:
+    - { name: "deepcnn",         chart_model: "deepcnn",        pretrained: false, lr: 0.001 }
+    - { name: "resnet18_pt",     chart_model: "resnet18",       pretrained: true,  lr: 0.0005 }
+    - { name: "efficientnet_pt", chart_model: "efficientnet_b0", pretrained: true,  lr: 0.0005 }
+    - { name: "vit_tiny",        chart_model: "vit_tiny",       pretrained: false, lr: 0.0005 }
+
+  # Ensemble: top-3 diverse encodings for voting
+  ensemble_encodings:
+    - gadf           # Gramian (angular domain)
+    - cwt            # Frequency domain
+    - rp_grayscale   # Recurrence (phase space domain)
+
+training:
+  batch_size: 512
+  epochs: 100
+  learning_rate: 0.001

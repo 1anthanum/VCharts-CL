@@ -1,0 +1,42 @@
+# ============================================================
+# Experiment 7B - Image Post-Processing Pipeline
+# ============================================================
+# Apply edge detection, contrast enhancement to existing chart
+# and encoding images before CNN training.
+# ============================================================
+
+experiment:
+  name: experiment_7b_postprocess
+  output_dir: results/experiment_7b_postprocess
+  image_size: 128
+  seeds: [42, 123, 7]
+  dataset_root: UCRArchive_2018
+  dataset_ext: tsv
+
+  datasets:
+    - SyntheticControl
+    - GunPoint
+    - CBF
+    - Trace
+    - ECG5000
+
+  source_encodings:
+    - line          # existing chart images
+    - gasf          # math encoding
+    - rp_grayscale  # math encoding
+
+  postprocess_methods:
+    - none          # baseline (no post-processing)
+    - canny         # Canny edge detection
+    - sobel         # Sobel gradient magnitude
+    - hist_eq       # Global histogram equalization
+    - clahe         # Contrast Limited Adaptive Hist Eq
+    - sobel_clahe   # Sobel + CLAHE combined
+
+  models:
+    - { name: "deepcnn",     chart_model: "deepcnn",  pretrained: false, lr: 0.001 }
+    - { name: "resnet18_pt", chart_model: "resnet18", pretrained: true,  lr: 0.0005 }
+
+training:
+  batch_size: 512
+  epochs: 100

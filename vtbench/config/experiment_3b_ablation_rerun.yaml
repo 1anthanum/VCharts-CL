@@ -1,0 +1,61 @@
+experiment:
+  name: experiment_3b_rerun
+  output_dir: results/experiment_3b_rerun
+  ablated_image_root: chart_images_ablated
+  generate_base_images: true
+  overwrite_ablated: false
+  use_saved_ablations: false
+  splits:
+    - test
+  dataset_root: UCRArchive_2018
+  dataset_ext: tsv
+  dataset_format: ucr
+  datasets:
+    - Adiac
+    - GunPoint
+    - ItalyPowerDemand
+    - WordSynonyms
+    - ArrowHead
+    - Coffee
+    - Herring
+    - Lightning2
+    - ToeSegmentation1
+    - Wine
+  chart_types:
+    - line
+    - area
+    - bar
+    - scatter
+
+model:
+  type: single_modal_chart
+  chart_model: resnet18
+  pretrained: true
+
+training:
+  batch_size: 32
+  epochs: 100
+  learning_rate: 0.0005
+  val_size: 0.2
+
+image_generation:
+  generate_images: true
+  overwrite_existing: false
+
+chart:
+  color_mode: color
+  label_mode: with_label
+  bar_mode: border
+  scatter_mode: plain
+
+ablations:
+  line_area:
+    blur_radius: 4
+    mask_threshold: 230
+    mask_expand: 3
+  bar:
+    merge_scale: 0.7
+    blur_radius: 1.5
+  scatter:
+    fade_alpha: 0.2
+    mask_threshold: 235

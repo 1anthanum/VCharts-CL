@@ -1,0 +1,67 @@
+# ============================================================
+# Experiment 5H — Image Resolution Effect
+# ============================================================
+# Tests 3 input image resolutions: 112x112, 224x224 (default), 336x336
+# Hypothesis: higher resolution preserves more temporal detail;
+# lower resolution may act as regularizer for small-sample datasets.
+#
+# Note: chart images are always generated at native resolution
+# (default 100 dpi → ~640x480). The resize happens at the
+# transform/dataloader level, NOT at generation time.
+# ============================================================
+
+experiment:
+  name: experiment_5h_resolution
+  output_dir: results/experiment_5h_resolution
+  dataset_root: UCRArchive_2018
+  dataset_ext: tsv
+  dataset_format: ucr
+  seeds: [42, 123, 7]
+
+  datasets:
+    - SyntheticControl    # 300 train,  60 length, 6 classes
+    - GunPoint            #  50 train, 150 length, 2 classes
+    - CBF                 #  30 train, 128 length, 3 classes
+    - Trace               # 100 train, 275 length, 4 classes
+    - ECG5000             # 500 train, 140 length, 5 classes
+
+  chart_types:
+    - line
+    - area
+
+  resolutions:
+    - 112
+    - 224
+    - 336
+
+augmentations:
+  - type: gaussian_blur
+    levels:
+      - { sigma: 1.0 }
+  - type: gaussian_noise
+    levels:
+      - { sigma: 25, seed: 0 }
+  - type: jpeg_compress
+    levels:
+      - { quality: 20 }
+
+model:
+  type: single_modal_chart
+  chart_model: deepcnn
+  pretrained: false
+
+training:
+  batch_size: 64
+  epochs: 100
+  learning_rate: 0.001
+  val_size: 0.2
+
+image_generation:
+  generate_images: true
+  overwrite_existing: false
+
+chart:
+  color_mode: color
+  label_mode: with_label
+  bar_mode: border
+  scatter_mode: plain

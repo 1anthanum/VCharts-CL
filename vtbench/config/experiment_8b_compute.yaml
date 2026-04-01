@@ -1,0 +1,50 @@
+experiment:
+  output_dir: results/experiment_8b_compute_profile
+  seed: 42
+  image_size: 128
+
+  # 2 representative datasets: one small, one large
+  datasets:
+    - GunPoint      # 50 train, fast iteration
+    - ECG5000       # 500 train, moderate size
+    # FordA → deferred to cloud (3601 train, GPU OOM risk)
+
+  # All available encoding methods for comprehensive profiling
+  chart_encodings:
+    - line
+    - area
+    - bar
+    - scatter
+
+  math_encodings:
+    - gasf
+    - gadf
+    - mtf
+    - rp
+    - rp_grayscale
+    - cwt
+    - stft
+
+  rgb_encodings:
+    - gasf_gadf_mtf
+    - rp_cwt_stft
+
+  extended_encodings:
+    - phase_trajectory
+    - phase_scatter
+    - phase_gasf_rp
+    - phase_cwt_mtf
+
+  models:
+    - name: deepcnn
+      chart_model: deepcnn
+      pretrained: false
+      lr: 0.001
+    - name: resnet18_pt
+      chart_model: resnet18
+      pretrained: true
+      lr: 0.0005
+
+training:
+  batch_size: 512
+  epochs: 100

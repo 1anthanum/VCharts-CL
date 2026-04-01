@@ -1,0 +1,62 @@
+experiment:
+  output_dir: results/experiment_8a_broad_evaluation
+  seeds: [42, 123, 7, 2024, 99]
+  image_size: 128
+
+  # 20 UCR datasets covering diverse TS characteristics:
+  #   Binary/Multiclass, Short/Long series, Small/Large training sets
+  datasets:
+    # Small binary (train < 100)
+    - GunPoint          # 50 train, 150 len, 2 classes
+    - BeetleFly         # 20 train, 512 len, 2 classes
+    - Coffee            # 28 train, 286 len, 2 classes
+    - TwoLeadECG        # 23 train, 82 len, 2 classes
+    - ECG200            # 100 train, 96 len, 2 classes
+    # Small multiclass (train < 100)
+    - CBF               # 30 train, 128 len, 3 classes
+    - Trace             # 100 train, 275 len, 4 classes
+    - ArrowHead         # 36 train, 251 len, 3 classes
+    - Beef              # 30 train, 470 len, 5 classes
+    - Wine              # 57 train, 234 len, 2 classes
+    # Medium (100-500 train)
+    - SyntheticControl  # 300 train, 60 len, 6 classes
+    - ECG5000           # 500 train, 140 len, 5 classes
+    - ItalyPowerDemand  # 67 train, 24 len, 2 classes
+    - SwedishLeaf       # 500 train, 128 len, 15 classes
+    - Fish              # 175 train, 463 len, 7 classes
+    # Large → LOCAL safe subset (Wafer/TwoPatterns/FordA deferred to cloud)
+    - Yoga              # 300 train, 426 len, 2 classes
+    - Adiac             # 390 train, 176 len, 37 classes
+    # Wafer, TwoPatterns, FordA → cloud server
+
+  # Top-performing encoding methods from 6A/7A
+  chart_encodings:
+    - line
+    - scatter
+
+  math_encodings:
+    - gasf
+    - rp_grayscale
+    - cwt
+
+  rgb_encodings:
+    - gasf_gadf_mtf
+    - rp_cwt_stft
+
+  extended_encodings:
+    - phase_trajectory
+    - phase_gasf_rp
+
+  models:
+    - name: deepcnn
+      chart_model: deepcnn
+      pretrained: false
+      lr: 0.001
+    - name: resnet18_pt
+      chart_model: resnet18
+      pretrained: true
+      lr: 0.0005
+
+training:
+  batch_size: 512
+  epochs: 100

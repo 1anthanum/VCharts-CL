@@ -1,0 +1,69 @@
+% =============================================================
+% VTBench — Related Work (VIS Short Paper)
+% =============================================================
+% Usage: \input{related_work.tex} in your main .tex file
+% Bibliography: \bibliography{references}
+% =============================================================
+
+\section{Related Work}
+\label{sec:related}
+
+Time series classification~(TSC) has traditionally relied on
+numerical-domain representations and specialized architectures.
+Early benchmarks such as the UCR archive~\cite{dau2019ucr} established a
+standardized evaluation setting, while subsequent work explored deep neural
+networks ranging from fully convolutional networks to residual architectures
+for learning temporal patterns directly from raw
+signals~\cite{fawaz2019deep}.
+More recent studies extend this line to attention-based models and
+self-supervised learning frameworks~\cite{foumani2024survey}.
+In parallel, efficient alternatives such as ROCKET~\cite{dempster2020rocket}
+and structured CNN designs~\cite{tang2022oscnn} demonstrate that strong
+performance can be achieved without heavy model complexity.
+These approaches operate directly on numerical sequences and serve as the
+primary baselines for our study.
+
+A complementary direction encodes time series as images, enabling the use of
+computer vision models.
+Early work introduced Gramian Angular Fields and Markov Transition Fields to
+transform temporal signals into structured
+images~\cite{wang2015imaging}.
+Recurrence plots, originating from dynamical systems
+theory~\cite{eckmann1987recurrence}, were later adopted for classification
+with convolutional networks~\cite{hatami2018classification}.
+Recent efforts further explore richer representations, including wavelet
+transform-based scalograms~\cite{zhao2024cwt3dcnn} and hybrid encodings that
+combine multiple image modalities~\cite{mariani2024fusion}.
+In addition, rendering time series as chart images and leveraging pretrained
+vision models has shown promising results~\cite{li2023vitst}.
+More advanced encoding strategies, such as wavelet scattering
+transforms~\cite{anden2014scattering}, path
+signatures~\cite{kidger2021signatory}, and persistence images from
+topological data analysis~\cite{seversky2016tda, umeda2017tda}, offer
+theoretically grounded alternatives but have received limited comparative
+evaluation.
+However, these methods are typically studied in isolation and lack systematic
+comparison across encoding strategies, model architectures~(including
+pretrained backbones such as
+EfficientNet~\cite{tan2019efficientnet}), and fusion configurations.
+
+Interpretability has also emerged as an important concern in time series
+analysis.
+While numerical models provide limited transparency, image-based
+representations offer a natural interface for visual inspection.
+Gradient-based localization methods such as
+Grad-CAM~\cite{selvaraju2017gradcam} have been widely used to highlight
+discriminative regions in image models, providing insights into model
+behavior.
+Complementary work has investigated robustness through data augmentation
+strategies in the time series
+domain~\cite{iglesias2023augmentation}, and image-level post-processing
+techniques (edge detection, contrast-limited adaptive histogram equalization)
+can further enhance encoding discriminability, although their interaction
+with visual encodings remains underexplored.
+
+In this work, we provide a controlled empirical comparison that spans
+numerical baselines, nine image encoding methods---including both classical
+(GASF, MTF, RP) and advanced (scattering, signature, persistence)
+representations---and four deep architectures, under a unified experimental
+setting across 20 UCR datasets.

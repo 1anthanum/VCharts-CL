@@ -1,0 +1,35 @@
+experiment:
+  name: experiment_5a_local
+  output_dir: results/experiment_5a_local
+  dataset_root: UCRArchive_2018
+  dataset_ext: tsv
+  dataset_format: ucr
+  seeds: [42]
+
+  datasets:
+    - name: SyntheticControl
+      num_classes: 6
+
+  chart_types: [line]
+
+  regimes:
+    - null
+    - moderate
+
+model:
+  type: single_modal_chart
+  chart_model: deepcnn
+  pretrained: false
+
+training:
+  batch_size: 64
+  epochs: 30
+  learning_rate: 0.001
+
+image_generation:
+  generate_images: true
+  overwrite_existing: false
+
+chart:
+  color_mode: color
+  label_mode: with_label

@@ -1,0 +1,66 @@
+# ──────────────────────────────────────────────
+# Python
+# ──────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+
+# ──────────────────────────────────────────────
+# Data (large, not committed)
+# ──────────────────────────────────────────────
+UCRArchive_2018/
+data/
+chart_images/
+chart_images_old/
+
+# ──────────────────────────────────────────────
+# Results & logs (generated, not committed)
+# ──────────────────────────────────────────────
+results/
+wandb/
+_tar_staging/
+_deprecated/
+
+# ──────────────────────────────────────────────
+# Temporary & OS files
+# ──────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+.ipynb_checkpoints/
+.pip_cache/
+
+# ──────────────────────────────────────────────
+# Large binary files (not code)
+# ──────────────────────────────────────────────
+*.zip
+*.tar.gz
+*.docx
+*.xlsx
+*.pptx
+
+# ──────────────────────────────────────────────
+# IDE
+# ──────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ──────────────────────────────────────────────
+# Session / analysis files (not part of codebase)
+# ──────────────────────────────────────────────
+ANALYSIS_SUMMARY.md
+FULL_RESULTS_DATA.txt
+EXPERIMENT_STATUS_REPORT.txt
+EXECUTION_PLAN.md
+NEXT_SESSION_PROMPT.md
+EXPERIMENT_5_README.md
+experiment_4_log.txt
+preflight_log.txt
+oin.py

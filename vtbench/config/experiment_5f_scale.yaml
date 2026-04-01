@@ -1,0 +1,79 @@
+# ============================================================
+# Experiment 5F — Dataset Scale Effect
+# ============================================================
+# Tests chart-based classification across datasets of varying size
+# to determine whether sample size is the primary driver of accuracy.
+#
+# Datasets grouped by training set size:
+#   Tiny   (<50):   BeetleFly(20), TwoLeadECG(23), Coffee(28)
+#   Small  (50-100): GunPoint(50), Lightning2(60), ECG200(100)
+#   Medium (200-500): Computers(250), Yoga(300), ECG5000(500)
+#   Large  (1000+):  TwoPatterns(1000), Wafer(1000), FordA(3601)
+# ============================================================
+
+experiment:
+  name: experiment_5f_scale
+  output_dir: results/experiment_5f_scale
+  dataset_root: UCRArchive_2018
+  dataset_ext: tsv
+  dataset_format: ucr
+  seeds: [42, 123, 7]
+
+  datasets:
+    # Tiny (<50 train samples)
+    - BeetleFly           #  20 train, 512 length, 2 classes
+    - TwoLeadECG          #  23 train,  82 length, 2 classes
+    - Coffee              #  28 train, 286 length, 2 classes
+    # Small (50-100)
+    - GunPoint            #  50 train, 150 length, 2 classes
+    - Lightning2          #  60 train, 637 length, 2 classes
+    - ECG200              # 100 train,  96 length, 2 classes
+    # Medium (200-500)
+    - Computers           # 250 train, 720 length, 2 classes
+    - Yoga                # 300 train, 426 length, 2 classes
+    - ECG5000             # 500 train, 140 length, 5 classes
+    # Large (1000+)
+    - TwoPatterns         # 1000 train, 128 length, 4 classes
+    - Wafer               # 1000 train, 152 length, 2 classes
+    - FordA               # 3601 train, 500 length, 2 classes
+
+  chart_types:
+    - line
+    - area
+    - scatter
+
+  model_configs:
+    - { name: "deepcnn",           chart_model: "deepcnn",  pretrained: false }
+    - { name: "resnet18_pretrained", chart_model: "resnet18", pretrained: true }
+
+augmentations:
+  - type: gaussian_blur
+    levels:
+      - { sigma: 1.0 }
+  - type: gaussian_noise
+    levels:
+      - { sigma: 25, seed: 0 }
+  - type: jpeg_compress
+    levels:
+      - { quality: 20 }
+
+model:
+  type: single_modal_chart
+  chart_model: deepcnn
+  pretrained: false
+
+training:
+  batch_size: 64
+  epochs: 100
+  learning_rate: 0.001
+  val_size: 0.2
+
+image_generation:
+  generate_images: true
+  overwrite_existing: false
+
+chart:
+  color_mode: color
+  label_mode: with_label
+  bar_mode: border
+  scatter_mode: plain

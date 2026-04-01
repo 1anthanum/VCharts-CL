@@ -1,0 +1,29 @@
+dataset:
+  name: ECG5000
+  train_path: UCRArchive_2018/ECG5000/ECG5000_TRAIN.tsv
+  test_path: UCRArchive_2018/ECG5000/ECG5000_TEST.tsv
+  format: ucr
+
+image_generation:
+  generate_images: true
+  overwrite_existing: false
+
+model:
+  type: single_modal_chart
+  chart_model: deepcnn
+  pretrained: false
+
+chart_branches:
+  branch_1:
+    chart_type: line
+    color_mode: color
+    label_mode: with_label
+
+training:
+  batch_size: 32
+  epochs: 100
+  learning_rate: 0.0005
+
+output:
+  dir: results/single_chart/
+  save_model: true

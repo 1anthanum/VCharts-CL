@@ -1,0 +1,68 @@
+# ============================================================
+# Experiment 5J — Training Strategy Optimization
+# ============================================================
+# Tests modern training techniques to improve generalization:
+#   - baseline:      standard CE + Adam + ReduceLROnPlateau
+#   - mixup:         mixup alpha=0.2
+#   - label_smooth:  label smoothing 0.1
+#   - cosine_lr:     cosine annealing scheduler
+#   - combined:      mixup + label_smooth + cosine_lr
+#   - class_weight:  inverse-frequency weighted CE
+#
+# Uses DeepCNN and ResNet18 (pretrained) on the 5 core datasets.
+# ============================================================
+
+experiment:
+  name: experiment_5j_training
+  output_dir: results/experiment_5j_training
+  dataset_root: UCRArchive_2018
+  dataset_ext: tsv
+  dataset_format: ucr
+  seeds: [42, 123, 7]
+
+  datasets:
+    - SyntheticControl
+    - GunPoint
+    - CBF
+    - Trace
+    - ECG5000
+
+  chart_types:
+    - line
+
+  training_strategies:
+    - name: "baseline"
+      params: {}
+    - name: "mixup_02"
+      params: { mixup_alpha: 0.2 }
+    - name: "label_smooth_01"
+      params: { label_smoothing: 0.1 }
+    - name: "cosine_lr"
+      params: { scheduler: "cosine" }
+    - name: "combined"
+      params: { mixup_alpha: 0.2, label_smoothing: 0.1, scheduler: "cosine" }
+    - name: "class_weight"
+      params: { class_weights: true }
+
+  model_configs:
+    - { name: "deepcnn", chart_model: "deepcnn", pretrained: false, lr: 0.001 }
+    - { name: "resnet18_pt", chart_model: "resnet18", pretrained: true, lr: 0.0005 }
+
+model:
+  type: single_modal_chart
+  chart_model: deepcnn
+  pretrained: false
+
+training:
+  batch_size: 64
+  epochs: 100
+  learning_rate: 0.001
+  val_size: 0.2
+
+image_generation:
+  generate_images: true
+  overwrite_existing: false
+
+chart:
+  color_mode: color
+  label_mode: with_label

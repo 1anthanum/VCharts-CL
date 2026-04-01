@@ -1,0 +1,60 @@
+# ============================================================
+# Experiment 5K — Time-Series Level Data Augmentation
+# ============================================================
+# Augments raw time-series data BEFORE generating chart images.
+# This creates new training samples (effective data expansion),
+# unlike image-domain augmentation which only perturbs existing charts.
+#
+# Tested multipliers: 2x, 5x, 10x the original training set size
+# Augmentation types: jitter, scaling, time_warp, magnitude_warp
+#
+# Critical for small-sample datasets (GunPoint=50, CBF=30)
+# ============================================================
+
+experiment:
+  name: experiment_5k_ts_augment
+  output_dir: results/experiment_5k_ts_augment
+  dataset_root: UCRArchive_2018
+  dataset_ext: tsv
+  dataset_format: ucr
+  seeds: [42, 123, 7]
+
+  datasets:
+    - GunPoint            #  50 train — primary target
+    - CBF                 #  30 train — primary target
+    - SyntheticControl    # 300 train — control
+    - Trace               # 100 train
+    - ECG5000             # 500 train — control
+
+  chart_types:
+    - line
+    - scatter
+
+  # Number of augmented copies per original sample
+  augment_multipliers: [0, 2, 5, 10]
+
+  # Which TS augmentations to apply
+  ts_augmentations:
+    - jitter
+    - scaling
+    - time_warp
+    - magnitude_warp
+
+model:
+  type: single_modal_chart
+  chart_model: deepcnn
+  pretrained: false
+
+training:
+  batch_size: 512
+  epochs: 100
+  learning_rate: 0.001
+  val_size: 0.2
+
+image_generation:
+  generate_images: true
+  overwrite_existing: false
+
+chart:
+  color_mode: color
+  label_mode: with_label

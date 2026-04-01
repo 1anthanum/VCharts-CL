@@ -1,0 +1,67 @@
+# Smoke test: GunPoint only, all chart types, all augmentations
+experiment:
+  name: experiment_4_smoke_test
+  output_dir: results/experiment_4_smoke_test
+  dataset_root: UCRArchive_2018
+  dataset_ext: tsv
+  dataset_format: ucr
+  datasets:
+    - GunPoint
+  chart_types:
+    - line
+    - area
+    - bar
+    - scatter
+  samples_per_dataset: 3
+  correct_only: true
+  seed: 42
+
+augmentations:
+  - type: gaussian_blur
+    levels:
+      - { sigma: 0.5 }
+      - { sigma: 1.0 }
+      - { sigma: 2.0 }
+  - type: crop_horizontal
+    levels:
+      - { crop_fraction: 0.05 }
+      - { crop_fraction: 0.10 }
+  - type: stripe_mask
+    levels:
+      - { num_stripes: 3, stripe_width: 5 }
+      - { num_stripes: 5, stripe_width: 5 }
+  - type: gaussian_noise
+    levels:
+      - { sigma: 10, seed: 0 }
+      - { sigma: 25, seed: 0 }
+  - type: jpeg_compress
+    levels:
+      - { quality: 50 }
+      - { quality: 20 }
+
+occlusion:
+  window_fraction: 0.10
+  stride_fraction: 0.05
+  fill_strategy: mean
+  score: logit_drop
+
+model:
+  type: single_modal_chart
+  chart_model: deepcnn
+  pretrained: false
+
+training:
+  batch_size: 32
+  epochs: 50
+  learning_rate: 0.0005
+  val_size: 0.2
+
+image_generation:
+  generate_images: true
+  overwrite_existing: false
+
+chart:
+  color_mode: color
+  label_mode: with_label
+  bar_mode: border
+  scatter_mode: plain

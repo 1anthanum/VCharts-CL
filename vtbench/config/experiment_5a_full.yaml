@@ -1,0 +1,71 @@
+# ============================================================
+# Experiment 5A — Training-Time Augmentation (Full Run)
+# ============================================================
+# Tests whether training with augmented images improves robustness
+# Regimes: baseline (no aug), mild, moderate, heavy
+# ============================================================
+
+experiment:
+  name: experiment_5a_full
+  output_dir: results/experiment_5a_full
+  dataset_root: UCRArchive_2018
+  dataset_ext: tsv
+  dataset_format: ucr
+  seeds: [42, 123, 7]
+
+  datasets:
+    - SyntheticControl    # 300 train, 60 length,  6 classes
+    - GunPoint            #  50 train, 150 length, 2 classes
+    - CBF                 #  30 train, 128 length, 3 classes
+    - Trace               # 100 train, 275 length, 4 classes
+    - ECG5000             # 500 train, 140 length, 5 classes
+
+  chart_types:
+    - line
+    - area
+
+  regimes:
+    - null        # baseline
+    - mild
+    - moderate
+    - heavy
+
+augmentations:
+  - type: gaussian_blur
+    levels:
+      - { sigma: 0.5 }
+      - { sigma: 1.0 }
+      - { sigma: 2.0 }
+  - type: crop_horizontal
+    levels:
+      - { crop_fraction: 0.05 }
+      - { crop_fraction: 0.10 }
+  - type: gaussian_noise
+    levels:
+      - { sigma: 10, seed: 0 }
+      - { sigma: 25, seed: 0 }
+  - type: jpeg_compress
+    levels:
+      - { quality: 50 }
+      - { quality: 20 }
+
+model:
+  type: single_modal_chart
+  chart_model: deepcnn
+  pretrained: false
+
+training:
+  batch_size: 64
+  epochs: 100
+  learning_rate: 0.001
+  val_size: 0.2
+
+image_generation:
+  generate_images: true
+  overwrite_existing: false
+
+chart:
+  color_mode: color
+  label_mode: with_label
+  bar_mode: border
+  scatter_mode: plain

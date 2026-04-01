@@ -1,0 +1,68 @@
+# ============================================================
+# Experiment 5D — Rendering Optimization (Full Run)
+# ============================================================
+# Tests rendering variants: no_labels, thick_lines, high_res, combined
+# ============================================================
+
+experiment:
+  name: experiment_5d_full
+  output_dir: results/experiment_5d_full
+  dataset_root: UCRArchive_2018
+  dataset_ext: tsv
+  dataset_format: ucr
+  seeds: [42, 123, 7]
+
+  datasets:
+    - SyntheticControl
+    - GunPoint
+    - CBF
+    - Trace
+    - ECG5000
+
+  chart_types:
+    - line
+    - area
+
+  render_variants:
+    - { name: "baseline",     params: {} }
+    - { name: "no_labels",    params: { label_mode: "without_label" } }
+    - { name: "thick_lines",  params: { linewidth: 3.0 } }
+    - { name: "high_res",     params: { dpi: 150 } }
+    - { name: "combined",     params: { linewidth: 3.0, label_mode: "without_label", dpi: 150 } }
+
+  overwrite_existing: true
+
+augmentations:
+  - type: gaussian_blur
+    levels:
+      - { sigma: 1.0 }
+  - type: crop_horizontal
+    levels:
+      - { crop_fraction: 0.10 }
+  - type: gaussian_noise
+    levels:
+      - { sigma: 25, seed: 0 }
+  - type: jpeg_compress
+    levels:
+      - { quality: 20 }
+
+model:
+  type: single_modal_chart
+  chart_model: deepcnn
+  pretrained: false
+
+training:
+  batch_size: 512
+  epochs: 100
+  learning_rate: 0.001
+  val_size: 0.2
+
+image_generation:
+  generate_images: true
+  overwrite_existing: true
+
+chart:
+  color_mode: color
+  label_mode: with_label
+  bar_mode: border
+  scatter_mode: plain

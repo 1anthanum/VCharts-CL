@@ -1,0 +1,47 @@
+experiment:
+  name: experiment_5e_two_branch
+  output_dir: results/experiment_5e_two_branch
+  dataset_root: UCRArchive_2018
+  dataset_ext: tsv
+  dataset_format: ucr
+  seeds: [42]
+  datasets:
+    - SyntheticControl
+    - GunPoint
+  chart_types:
+    - line
+    - area
+  numerical_models: [fcn, oscnn]
+  fusion_mode: concat
+
+augmentations:
+  - type: gaussian_blur
+    levels:
+      - { sigma: 1.0 }
+      - { sigma: 2.0 }
+  - type: gaussian_noise
+    levels:
+      - { sigma: 25, seed: 0 }
+
+model:
+  type: two_branch
+  chart_model: deepcnn
+  pretrained: false
+  numerical_branch: fcn
+  fusion: concat
+
+training:
+  batch_size: 64
+  epochs: 100
+  learning_rate: 0.001
+  val_size: 0.2
+
+image_generation:
+  generate_images: true
+  overwrite_existing: false
+
+chart:
+  color_mode: color
+  label_mode: with_label
+  bar_mode: border
+  scatter_mode: plain

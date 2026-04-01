@@ -1,0 +1,30 @@
+# ============================================================
+# Experiment 6B — Pure Numerical Baselines
+# ============================================================
+# Critical control experiment: how well do standard numerical
+# TSC methods perform WITHOUT any image conversion?
+# ============================================================
+
+experiment:
+  name: experiment_6b_numerical
+  output_dir: results/experiment_6b_numerical
+  seeds: [42, 123, 7]
+
+  datasets:
+    - SyntheticControl
+    - GunPoint
+    - CBF
+    - Trace
+    - ECG5000
+    - FordA
+    - Wafer
+
+  models:
+    - fcn            # Fully Convolutional Network
+    - transformer    # Transformer encoder
+    - oscnn          # Omni-Scale CNN
+
+training:
+  batch_size: 64
+  epochs: 100
+  learning_rate: 0.001

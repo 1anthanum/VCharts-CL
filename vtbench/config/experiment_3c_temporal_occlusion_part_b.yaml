@@ -1,0 +1,48 @@
+experiment:
+  name: experiment_3c_temporal_occlusion_part_b
+  output_dir: results/experiment_3c_part_b
+  dataset_root: UCRArchive_2018
+  dataset_ext: tsv
+  dataset_format: ucr
+  datasets:
+    - CricketX
+    - ECG5000
+    - Earthquakes
+    - ToeSegmentation1
+    - GunPoint
+  chart_types:
+    - line
+    - area
+    - bar
+    - scatter
+  samples_per_dataset: 5
+  correct_only: true
+  runs: 10
+  seed: 42
+
+occlusion:
+  window_fraction: 0.10
+  stride_fraction: 0.05
+  fill_strategy: mean
+  score: logit_drop
+
+model:
+  type: single_modal_chart
+  chart_model: deepcnn
+  pretrained: false
+
+training:
+  batch_size: 32
+  epochs: 100
+  learning_rate: 0.0005
+  val_size: 0.2
+
+image_generation:
+  generate_images: true
+  overwrite_existing: false
+
+chart:
+  color_mode: color
+  label_mode: with_label
+  bar_mode: border
+  scatter_mode: plain

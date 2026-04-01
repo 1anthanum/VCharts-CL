@@ -1,0 +1,40 @@
+# ============================================================
+# Experiment 7A — CLOUD ONLY (Large Datasets)
+# ============================================================
+# FordA and Wafer runs that cause GPU OOM on RTX 5070 Ti 16GB.
+# Run on cloud server with ≥24GB VRAM.
+# ============================================================
+
+experiment:
+  name: experiment_7a_extended
+  output_dir: results/experiment_7a_extended
+  image_size: 128
+  seeds: [42, 123, 7]
+  dataset_root: UCRArchive_2018
+  dataset_ext: tsv
+
+  datasets:
+    - FordA             # 3601 train, 500 len, 2 classes
+    - Wafer             # 1000 train, 152 len, 2 classes
+
+  encodings:
+    - phase_scatter
+    - phase_trajectory
+    - phase_tau_auto
+    - gasf_diff
+    - gasf_cumsum
+    - rp_diff
+
+  rgb_encodings:
+    - phase_gasf_rp
+    - phase_cwt_mtf
+    - gasf_gasfdiff_gadf
+    - phase_multi_tau
+
+  models:
+    - { name: "deepcnn",     chart_model: "deepcnn",  pretrained: false, lr: 0.001 }
+    - { name: "resnet18_pt", chart_model: "resnet18", pretrained: true,  lr: 0.0005 }
+
+training:
+  batch_size: 128
+  epochs: 100

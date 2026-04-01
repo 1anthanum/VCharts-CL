@@ -1,0 +1,66 @@
+# ============================================================
+# Experiment 5M — Cross-Dataset Transfer Learning
+# ============================================================
+# Pre-trains on large datasets, then fine-tunes on small datasets.
+#
+# Source (pre-train):  FordA (3601 train), ECG5000 (500 train)
+# Target (fine-tune):  GunPoint (50), CBF (30), BeetleFly (20)
+#
+# Strategy:
+#   1. Pre-train chart encoder on source dataset
+#   2. Freeze conv layers, replace classifier
+#   3. Fine-tune on target dataset (classifier only, then full)
+#
+# Hypothesis: Feature representations learned from large chart
+# datasets should transfer to small datasets of similar domain.
+# ============================================================
+
+experiment:
+  name: experiment_5m_transfer
+  output_dir: results/experiment_5m_transfer
+  dataset_root: UCRArchive_2018
+  dataset_ext: tsv
+  dataset_format: ucr
+  seeds: [42, 123, 7]
+
+  source_datasets:
+    # FordA → deferred to cloud (3601 train, GPU OOM risk)
+    - ECG5000             # 500 train, 140 length, 5 classes
+
+  target_datasets:
+    - GunPoint            #  50 train, 2 classes
+    - CBF                 #  30 train, 3 classes
+    - BeetleFly           #  20 train, 2 classes
+    - Trace               # 100 train, 4 classes
+
+  chart_types:
+    - line
+
+  finetune_strategies:
+    - name: "classifier_only"
+      freeze_backbone: true
+      lr: 0.001
+      epochs: 50
+    - name: "full_finetune"
+      freeze_backbone: false
+      lr: 0.0001
+      epochs: 50
+
+model:
+  type: single_modal_chart
+  chart_model: deepcnn
+  pretrained: false
+
+training:
+  batch_size: 512
+  epochs: 100
+  learning_rate: 0.001
+  val_size: 0.2
+
+image_generation:
+  generate_images: true
+  overwrite_existing: false
+
+chart:
+  color_mode: color
+  label_mode: with_label

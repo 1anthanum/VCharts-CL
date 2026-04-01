@@ -1,0 +1,57 @@
+# ============================================================
+# Experiment 5L — Ensemble Voting
+# ============================================================
+# Combines predictions from independently trained models via voting.
+# Three ensemble strategies:
+#   1. Chart-type ensemble: vote across line, area, scatter models
+#   2. Model ensemble: vote across DeepCNN, ResNet18, EfficientNet
+#   3. Full ensemble: vote across all (chart_type x model) combinations
+#
+# Uses majority voting (hard) and probability averaging (soft).
+# ============================================================
+
+experiment:
+  name: experiment_5l_ensemble
+  output_dir: results/experiment_5l_ensemble
+  dataset_root: UCRArchive_2018
+  dataset_ext: tsv
+  dataset_format: ucr
+  seeds: [42, 123, 7]
+
+  datasets:
+    - SyntheticControl
+    - GunPoint
+    - CBF
+    - Trace
+    - ECG5000
+
+  chart_types:
+    - line
+    - area
+    - scatter
+
+  model_configs:
+    - { name: "deepcnn",    chart_model: "deepcnn",      pretrained: false, lr: 0.001 }
+    - { name: "resnet18",   chart_model: "resnet18",     pretrained: true,  lr: 0.0005 }
+    - { name: "efficientnet", chart_model: "efficientnet", pretrained: true, lr: 0.0003 }
+
+model:
+  type: single_modal_chart
+  chart_model: deepcnn
+  pretrained: false
+
+training:
+  batch_size: 512
+  epochs: 100
+  learning_rate: 0.001
+  val_size: 0.2
+
+image_generation:
+  generate_images: true
+  overwrite_existing: false
+
+chart:
+  color_mode: color
+  label_mode: with_label
+  bar_mode: border
+  scatter_mode: plain

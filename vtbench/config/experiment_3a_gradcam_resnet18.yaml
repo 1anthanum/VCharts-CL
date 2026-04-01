@@ -1,0 +1,85 @@
+experiment:
+  name: experiment_3a_gradcam_resnet18
+  output_dir: results/experiment_3a_resnet18
+  dataset_root: UCRArchive_2018
+  dataset_ext: tsv
+  dataset_format: ucr
+  datasets:
+    - ECG200
+    - ItalyPowerDemand
+    - GunPoint
+    - Wafer
+    - Coffee
+    - ArrowHead
+    - BeetleFly
+    - Herring
+    - Lightning2
+    - ToeSegmentation1
+    - Yoga
+    - Adiac
+    - CricketX
+    - CricketY
+    - CricketZ
+    - Earthquakes
+    - FaceAll
+    - TwoPatterns
+    - SyntheticControl
+    - ShapeletSim
+    - MoteStrain
+    - TwoLeadECG
+    - Lightning7
+  dataset_category:
+    ECG200: encoding-invariant
+    ItalyPowerDemand: encoding-invariant
+    GunPoint: encoding-dominant-motion
+    Wafer: encoding-sensitive-non-motion
+    Coffee: encoding-sensitive-non-motion
+    ArrowHead: unspecified
+    BeetleFly: unspecified
+    Herring: unspecified
+    Lightning2: unspecified
+    ToeSegmentation1: unspecified
+    Yoga: unspecified
+    Adiac: unspecified
+    CricketX: unspecified
+    CricketY: unspecified
+    CricketZ: unspecified
+    Earthquakes: unspecified
+    FaceAll: unspecified
+    TwoPatterns: unspecified
+    SyntheticControl: unspecified
+    ShapeletSim: unspecified
+    MoteStrain: unspecified
+    TwoLeadECG: unspecified
+    Lightning7: unspecified
+  chart_types:
+    - line
+    - area
+    - bar
+    - scatter
+  samples_per_class: 10
+  overlay_alpha: 0.5
+  grid_cell_size: 160
+  grid_padding: 6
+  grid_bgcolor: [255, 255, 255]
+
+model:
+  type: single_modal_chart
+  chart_model: resnet18
+  pretrained: true
+
+training:
+  batch_size: 32
+  epochs: 100
+  learning_rate: 0.0005
+  val_size: 0.2
+
+image_generation:
+  generate_images: true
+  overwrite_existing: false
+
+chart:
+  color_mode: color
+  label_mode: with_label
+  bar_mode: border
+  scatter_mode: plain

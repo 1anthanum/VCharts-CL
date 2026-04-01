@@ -1,0 +1,61 @@
+# ============================================================
+# Experiment 6A — Image Encoding Method Comparison
+# ============================================================
+# THE central experiment: which visual encoding works best for TSC?
+# Compares chart-based, mathematical, frequency-domain, and composite
+# encoding methods across multiple datasets and model backbones.
+# ============================================================
+
+experiment:
+  name: experiment_6a_encodings
+  output_dir: results/experiment_6a_encodings
+  image_size: 128
+  seeds: [42, 123, 7]
+
+  datasets:
+    - SyntheticControl    # 300 train, 6 classes — large, easy
+    - GunPoint            #  50 train, 2 classes — small, binary
+    - CBF                 #  30 train, 3 classes — smallest
+    - Trace               # 100 train, 4 classes — medium
+    - ECG5000             # 500 train, 5 classes — large, multi-class
+    - FordA               # 3601 train, 2 classes — very large
+    - Wafer               # 1000 train, 2 classes — imbalanced
+
+  # --- Chart-based encodings (existing) ---
+  chart_encodings:
+    - line
+    - area
+    - bar
+    - scatter
+
+  # --- Mathematical TS-to-Image encodings (NEW) ---
+  math_encodings:
+    - gasf               # Gramian Angular Summation Field
+    - gadf               # Gramian Angular Difference Field
+    - mtf                # Markov Transition Field (8 bins)
+    - mtf_16             # MTF with 16 bins (finer granularity)
+    - rp                 # Recurrence Plot (binary)
+    - rp_grayscale       # Recurrence Plot (continuous)
+    - cwt                # Continuous Wavelet Transform scalogram
+    - stft               # Short-Time Fourier Transform spectrogram
+
+  # --- RGB Multi-Channel Stacking (NEW, potentially novel) ---
+  rgb_encodings:
+    - gasf_gadf_mtf      # GASF=R, GADF=G, MTF=B
+    - rp_cwt_stft        # RP=R, CWT=G, STFT=B
+
+  # --- Colormap variants ---
+  colormap_encodings:
+    - gasf_viridis
+    - gadf_plasma
+    - rp_grayscale_inferno
+
+  # --- Models ---
+  models:
+    - { name: "deepcnn",     chart_model: "deepcnn",  pretrained: false, lr: 0.001 }
+    - { name: "resnet18_pt", chart_model: "resnet18", pretrained: true,  lr: 0.0005 }
+
+training:
+  batch_size: 128
+  epochs: 100
+  learning_rate: 0.001

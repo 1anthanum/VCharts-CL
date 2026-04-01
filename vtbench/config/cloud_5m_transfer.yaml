@@ -1,0 +1,55 @@
+# ============================================================
+# Experiment 5M — CLOUD ONLY (FordA as Source)
+# ============================================================
+# FordA pre-training that causes GPU OOM on RTX 5070 Ti 16GB.
+# Run on cloud server with ≥24GB VRAM.
+# ============================================================
+
+experiment:
+  name: experiment_5m_transfer
+  output_dir: results/experiment_5m_transfer
+  dataset_root: UCRArchive_2018
+  dataset_ext: tsv
+  dataset_format: ucr
+  seeds: [42, 123, 7]
+
+  source_datasets:
+    - FordA               # 3601 train, 500 length, 2 classes
+
+  target_datasets:
+    - GunPoint            #  50 train, 2 classes
+    - CBF                 #  30 train, 3 classes
+    - BeetleFly           #  20 train, 2 classes
+    - Trace               # 100 train, 4 classes
+
+  chart_types:
+    - line
+
+  finetune_strategies:
+    - name: "classifier_only"
+      freeze_backbone: true
+      lr: 0.001
+      epochs: 50
+    - name: "full_finetune"
+      freeze_backbone: false
+      lr: 0.0001
+      epochs: 50
+
+model:
+  type: single_modal_chart
+  chart_model: deepcnn
+  pretrained: false
+
+training:
+  batch_size: 256
+  epochs: 100
+  learning_rate: 0.001
+  val_size: 0.2
+
+image_generation:
+  generate_images: true
+  overwrite_existing: false
+
+chart:
+  color_mode: color
+  label_mode: with_label
