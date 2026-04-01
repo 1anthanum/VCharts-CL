@@ -96,13 +96,18 @@ class Heartbeat:
         try:
             with open(tmp, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=2, ensure_ascii=False)
-            # Atomic rename (works on Windows if same drive)
-            if os.path.exists(self.hb_file):
-                os.remove(self.hb_file)
-            os.rename(tmp, self.hb_file)
+                f.flush()
+                os.fsync(f.fileno())
+            # On Linux, os.replace() is atomic and overwrites existing files.
+            # On Windows, os.replace() also works (Python 3.3+).
+            os.replace(tmp, self.hb_file)
         except Exception:
             # Never crash the training because of heartbeat I/O
-            pass
+            try:
+                if os.path.exists(tmp):
+                    os.remove(tmp)
+            except Exception:
+                pass
 
     @staticmethod
     def _ts():

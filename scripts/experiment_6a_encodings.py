@@ -300,15 +300,28 @@ def run_experiment(config_path):
     ])
 
     # CSV output — resume-aware: load existing results, skip completed runs
+    # Only skip runs that actually succeeded (accuracy > 0).
+    # Failed runs (accuracy <= 0) will be retried.
     csv_path = os.path.join(output_dir, "encoding_comparison.csv")
     completed_runs = set()
-    if os.path.exists(csv_path):
+    file_exists = os.path.exists(csv_path)
+
+    if file_exists:
+        failed_count = 0
         with open(csv_path, encoding="utf-8") as f_exist:
             reader = csv.DictReader(f_exist)
             for row in reader:
-                key = (row['seed'], row['dataset'], row['encoding_name'], row['model'])
-                completed_runs.add(key)
-        print(f"Resuming: {len(completed_runs)} runs already completed, appending.")
+                try:
+                    acc = float(row.get("accuracy", -1))
+                except (ValueError, TypeError):
+                    acc = -1
+                if acc > 0:
+                    key = (row['seed'], row['dataset'], row['encoding_name'], row['model'])
+                    completed_runs.add(key)
+                else:
+                    failed_count += 1
+        print(f"Resuming: {len(completed_runs)} completed runs "
+              f"({failed_count} failed runs will be retried), appending.")
         csv_file = open(csv_path, "a", newline="", encoding="utf-8")
         writer = csv.writer(csv_file)
     else:

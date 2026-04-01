@@ -31,7 +31,7 @@ from pathlib import Path
 # Configuration
 # ============================================================
 
-CHART_IMAGE_ROOT = os.environ.get("CHART_IMAGE_ROOT", r"D:\chart_images")
+CHART_IMAGE_ROOT = os.environ.get("CHART_IMAGE_ROOT", "chart_images")
 RESULTS_DIR = "results"
 STATE_FILE = os.path.join(RESULTS_DIR, "orchestrator_state.json")
 LOG_DIR = os.path.join(RESULTS_DIR, "logs")
@@ -235,17 +235,26 @@ PHASES = [
     {"name": "A",   "desc": "Image Generation (CPU)",          "solo_gpu": False, "slots": [["preflight"]]},
     {"name": "B1",  "desc": "Baselines",                       "solo_gpu": True,  "slots": [["6b"]]},
     {"name": "B2",  "desc": "6A Encoding comparison",          "solo_gpu": True,  "slots": [["6a"]]},
+    # 5I/5E/5B: backbone, two-branch, multi-chart (each ~200-500MB VRAM) → solo for safety
+    {"name": "B2b", "desc": "Backbone + Fusion experiments",    "solo_gpu": True,  "slots": [["5i", "5e", "5b"]]},
     {"name": "B3",  "desc": "Extended encodings",               "solo_gpu": True,  "slots": [["7a"]]},
-    {"name": "B3b", "desc": "Image post-processing",            "solo_gpu": True,  "slots": [["7b"]]},
+    # 5A + 5C: augmentation + resnet18 (sequential in one slot)
+    {"name": "B3b", "desc": "Augmentation + ResNet18",          "solo_gpu": True,  "slots": [["5a", "5c"]]},
+    {"name": "B3c", "desc": "Image post-processing",            "solo_gpu": True,  "slots": [["7b"]]},
     # 5D + 5M: both DeepCNN-only, tiny VRAM (~200MB each) → safe parallel
     {"name": "B4",  "desc": "Rendering + Transfer (DeepCNN parallel)",
      "solo_gpu": False, "slots": [["5d"], ["5m"]]},
+    # 5F: dataset scale experiment
+    {"name": "B4b", "desc": "Dataset Scale",                    "solo_gpu": True,  "slots": [["5f"]]},
     # 5K: DeepCNN but augmented data up to 10x → solo to be safe
-    {"name": "B4b", "desc": "TS Augmentation (up to 10x data)", "solo_gpu": True,  "slots": [["5k"]]},
+    {"name": "B4c", "desc": "TS Augmentation (up to 10x data)", "solo_gpu": True,  "slots": [["5k"]]},
+    # 7C + 5G + 5H + 5J: chart ablation, chart type, resolution, training
+    {"name": "B5",  "desc": "Chart ablation + type + resolution + training",
+     "solo_gpu": True,  "slots": [["7c", "5g", "5h", "5j"]]},
     # 5L: 3 models (deepcnn+resnet18+efficientnet) → MUST be solo
-    {"name": "B5",  "desc": "Ensemble (3 models, solo)",        "solo_gpu": True,  "slots": [["5l"]]},
+    {"name": "B5b", "desc": "Ensemble (3 models, solo)",        "solo_gpu": True,  "slots": [["5l"]]},
     # 8B: 2 models but only 2 small datasets → solo (has resnet18)
-    {"name": "B5b", "desc": "Compute profiling",                "solo_gpu": True,  "slots": [["8b"]]},
+    {"name": "B5c", "desc": "Compute profiling",                "solo_gpu": True,  "slots": [["8b"]]},
     # 8A: headline experiment, 17 datasets, long-running → solo
     {"name": "B6",  "desc": "8A Broad Evaluation (headline)",   "solo_gpu": True,  "slots": [["8a"]]},
     {"name": "C0",  "desc": "Pre-gen 9A images (CPU)",          "solo_gpu": False, "slots": [["pregen_9a"]]},
