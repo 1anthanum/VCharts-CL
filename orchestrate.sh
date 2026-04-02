@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --job-name=vtbench-full
-#SBATCH --partition=low
+#SBATCH --partition=high
 #SBATCH --account=publicgrp
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
-#SBATCH --time=24:00:00
+#SBATCH --time=3-00:00:00
 #SBATCH --output=/home/%u/logs/%j_out.txt
 #SBATCH --error=/home/%u/logs/%j_err.txt
 #SBATCH --signal=USR1@300
