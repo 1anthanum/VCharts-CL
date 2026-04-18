@@ -204,13 +204,17 @@ class ChartDatasetAug(torch.utils.data.Dataset):
         g_idx = self.global_indices[idx]
         path = self._find_image(g_idx)
         if path is None:
-            # Warn loudly instead of silently returning black image
-            if not hasattr(self, '_warned'):
-                self._warned = True
-                print(f"  WARNING: image not found for index {g_idx} in {self.image_dir}")
-                print(f"  Available files sample: {os.listdir(self.image_dir)[:3]}")
-            tensor = torch.zeros(3, 128, 128)
-            return tensor, self.labels[idx]
+            # Fail loudly — silent zero-tensor fallback was polluting
+            # accuracy metrics (see experiment 7C GunPoint/CBF 0.0000 rows).
+            try:
+                available = os.listdir(self.image_dir)[:5]
+            except FileNotFoundError:
+                available = "<image_dir itself missing>"
+            raise FileNotFoundError(
+                f"Chart image not found for global index {g_idx} in "
+                f"'{self.image_dir}'. Available files sample: {available}. "
+                f"Run scripts/pregenerate.py before experiment 7C."
+            )
 
         img = Image.open(path).convert("RGB")
         if self.transform:

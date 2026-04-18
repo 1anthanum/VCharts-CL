@@ -49,12 +49,9 @@ experiment:
     - se_attention       # SE-Net on backbone
     - cbam_attention     # CBAM on backbone
 
-  # Models
+  # Models (DeepCNN-only per trained-from-scratch methodology)
   models:
-    - { name: "deepcnn",         chart_model: "deepcnn",        pretrained: false, lr: 0.001 }
-    - { name: "resnet18_pt",     chart_model: "resnet18",       pretrained: true,  lr: 0.0005 }
-    - { name: "efficientnet_pt", chart_model: "efficientnet_b0", pretrained: true,  lr: 0.0005 }
-    - { name: "vit_tiny",        chart_model: "vit_tiny",       pretrained: false, lr: 0.0005 }
+    - { name: "deepcnn", chart_model: "deepcnn", pretrained: false, lr: 0.001 }
 
   # Ensemble: top-3 diverse encodings for voting
   ensemble_encodings:

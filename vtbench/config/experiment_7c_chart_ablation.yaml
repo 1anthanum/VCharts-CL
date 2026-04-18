@@ -45,8 +45,8 @@ experiment:
     - cutmix
 
   models:
-    - { name: "resnet18_pt", chart_model: "resnet18", pretrained: true, lr: 0.0005 }
+    - { name: "deepcnn", chart_model: "deepcnn", pretrained: false, lr: 0.001 }
 
 training:
-  batch_size: 64
+  batch_size: 16
   epochs: 100
